@@ -1,5 +1,5 @@
 class Hand {
-    constructor(x,y,w,h,degreeDisplacementUnit,initialDeg,unitStepTime){
+    constructor(x,y,w,h,degreeDisplacementUnit,initialDeg,unitStepTime,initAccumulatorTime=0){
         this.displacementUnit = degreeDisplacementUnit; //radian
         this.currentDeg = initialDeg;
         this.x = x;
@@ -7,13 +7,14 @@ class Hand {
         this.w = w;
         this.h = h;
         this.maxIndex = Math.PI*2/this.displacementUnit;
-        this.accumulator = 0;
+        this.accumulator = initAccumulatorTime;
         this.unitStepTime = unitStepTime;
         this.currentIndex = this.currentDeg/this.displacementUnit;
         this.handColor = "rgb(0,0,0)";
     }
     update(dt){
-        this.accumulator+=dt;
+        this.changed = false;
+        this.accumulator += dt;
         if(this.accumulator>=this.unitStepTime){
             this.accumulator-=this.unitStepTime;
             this.currentIndex = (this.currentIndex+1) % this.maxIndex;
@@ -27,7 +28,6 @@ class Hand {
         ctx.rotate(this.currentDeg);
         ctx.fillStyle = this.handColor;
         ctx.fillRect(-20,-this.h/2,this.w,this.h);
-
         ctx.restore();
     }
     setHandColour(color){
@@ -77,12 +77,15 @@ class Clock {
         for(let i=0; i<this.noLabels; i++){
             this.labels.push(new Label(this,(3+i)%this.noLabels));
         }
-        this.secondHand = new Hand(this.x,this.y,200,6,(Math.PI/(6*5)),0,1);
-        this.minuteHand = new Hand(this.x,this.y,200,10,(Math.PI/(30)),0,60);
+        this.secondHand = new Hand(this.x,this.y,this.radius*0.88,6,(Math.PI/(6*5)),0,1);
+        this.secondHand.setHandColour("white");
+        this.minuteHand = new Hand(this.x,this.y,this.radius*0.88,10,(Math.PI/(30)),0,60,15);
+        this.hourHand = new Hand(this.x,this.y,this.radius*0.5,12,(Math.PI/6),0,(60*60),(15*60));
     }
     update(dt){
         this.secondHand.update(dt);
         this.minuteHand.update(dt);
+        this.hourHand.update(dt);
     }
     render(ctx){
         //outer body rendering
@@ -102,8 +105,10 @@ class Clock {
         }
     }
     renderHands(ctx){
-        this.minuteHand.render(ctx);
         this.secondHand.render(ctx);
+        this.minuteHand.render(ctx);
+        this.hourHand.render(ctx);
+
     }
 }
 
