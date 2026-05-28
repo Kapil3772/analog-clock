@@ -39,7 +39,7 @@ class Label {
     constructor(clock,label){
         this.clock = clock;
         this.label = label;
-        this.outerPadding = 20; //px
+        this.outerPadding = 30; //px
         this.angle = this.label*Math.PI/6;
         this.x = this.clock.x + this.clock.radius*Math.cos(this.angle) -(this.outerPadding*Math.cos(this.angle));
         this.y = this.clock.y + this.clock.radius*Math.sin(this.angle) -(this.outerPadding*Math.sin(this.angle));
@@ -50,10 +50,14 @@ class Label {
     }
     render(ctx){
         //temp code
-        ctx.fillStyle="red";
-        ctx.beginPath();
-        ctx.arc(this.x,this.y,10,0,Math.PI*2);
-        ctx.fill();
+        // ctx.fillStyle="red";
+        // ctx.beginPath();
+        // ctx.arc(this.x,this.y,10,0,Math.PI*2);
+        // ctx.fill();
+        ctx.fillStyle = "black";
+        ctx.font = "40px bold";
+        let renderLabel = ((this.label + 2)%this.clock.noLabels) + 1;
+        ctx.fillText(renderLabel,this.x-10,this.y+12.5);
     }
 }
 
@@ -89,7 +93,7 @@ class Clock {
         //labels rendering
         this.renderLabels(ctx);
         this.renderHands(ctx);
-        ctx.fillStyle="black";
+        ctx.fillStyle="blue";
         ctx.fillRect(this.x-4,this.y-4,8,8);
     }
     renderLabels(ctx){
