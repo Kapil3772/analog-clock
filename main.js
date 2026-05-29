@@ -11,30 +11,27 @@ class Theme {
 }
 
 const Themes = {
-    CARTOON : new Theme(
-        "#FFD93D","#6BCBFF","#FFFFFF","#2B2B2B","#FF4D4D","rgba(0,0,0,0.25)","bold 28px Fredoka"),
-    LUXURY : new Theme(
-        "#C89B3C","#0F0F0F","#E8D7A5","#F4F1EA","#D72638","rgba(0,0,0,0.65)","bold 26px Georgia"),
-    MODERN : new Theme(
-        "#6E7B8B","#161A20","#C9D6DF","#F1F5F9","#38BDF8","rgba(0,0,0,0.55)","600 26px Segoe UI"),
-    OLD : new Theme(
-        "#B87333","#1B1B1B","#D8C3A5","#F7F3EE","#FF6B35","rgba(0,0,0,0.7)","bold 30px Garamond"),
-    REALISTIC : new Theme(
-        "#9AA3AD","#F2F2F2","#1E1E1E","#111111","#D62828","rgba(0,0,0,0.18)","bold 26px Helvetica"),
-    FUTURISTIC : new Theme(
-        "#00E5FF","#0A0F1C","#7DF9FF","#EAFBFF","#FF2E88","rgba(0,0,0,0.65)","600 28px Orbitron"),
-    MINIMAL : new Theme(
-        "#D9D9D9","#FAFAFA","#2B2B2B","#111111","#FF3B30","rgba(0,0,0,0.10)","500 25px Helvetica"),
-    MIDNIGHT : new Theme(
-        "#4B5563","#111827","#E5E7EB","#F9FAFB","#60A5FA","rgba(0,0,0,0.75)","bold 27px Trebuchet MS"),
-    WOOD : new Theme(
-        "#7B4F2C","#E8DCC8","#3a2215","#2B1B0E","#A63D40","rgba(60,30,10,0.35)","bold 28px Palatino Linotype"),
-    INDUSTRIAL : new Theme(
-        "#5A5A5A","#2A2A2A","#D6D3D1","#E7E5E4","#F59E0B","rgba(0,0,0,0.7)","bold 26px Impact"),
-    HOLOGRAM : new Theme(
-        "#6EE7FF","#07131F","#67E8F9","#DFFAFF","#A855F7","rgba(0,0,0,0.6)","600 28px Orbitron")
+    BLACK_ICE : new Theme(
+        "rgba(210,230,255,0.22)","rgba(8,12,18,0.92)","#F3FAFF","#FFFFFF","#72D8FF","rgba(0,0,0,0.82)","600 28px Segoe UI"),
+    TITANIUM : new Theme(
+        "rgba(200,205,215,0.30)","rgba(26,30,36,0.94)","#EDF2F7","#FAFAFA","#8BA3B8","rgba(0,0,0,0.75)","600 27px Helvetica"),
+    GOLDEN_HOUR : new Theme(
+        "rgba(255,210,120,0.32)","rgba(28,18,12,0.92)","#FFE8B6","#FFF7E8","#F9B233","rgba(0,0,0,0.70)","600 28px Georgia"),
+    CRIMSON_NIGHT : new Theme(
+        "rgba(255,120,120,0.26)","rgba(20,8,10,0.94)","#FFE3E3","#FFF5F5","#FF4D6D","rgba(0,0,0,0.82)","600 28px Georgia"),
+    ARCTIC_GLASS : new Theme(
+        "rgba(220,240,255,0.22)","rgba(18,28,40,0.55)","#F5FBFF","#FFFFFF","#8AD7FF","rgba(0,0,0,0.40)","600 27px Segoe UI"),
+    DEEP_OCEAN : new Theme(
+        "rgba(80,170,255,0.28)","rgba(6,22,38,0.94)","#DDF5FF","#F8FDFF","#00B4FF","rgba(0,0,0,0.78)","600 27px Segoe UI"),
+    VIOLET_DREAM : new Theme(
+        "rgba(200,150,255,0.28)","rgba(18,10,28,0.94)","#F6EAFF","#FFF8FF","#C77DFF","rgba(0,0,0,0.78)","600 28px Segoe UI"),
+    EMBER : new Theme(
+        "rgba(255,170,120,0.24)","rgba(24,10,6,0.95)","#FFE7D9","#FFF7F0","#FF7A45","rgba(0,0,0,0.82)","600 28px Trebuchet MS"),
+    MOONLIGHT : new Theme(
+        "rgba(255,255,255,0.18)","rgba(18,18,24,0.88)","#F5F7FA","#FFFFFF","#A5B4FC","rgba(0,0,0,0.72)","600 27px Helvetica"),
+    ROYAL : new Theme(
+        "rgba(150,120,255,0.30)","rgba(10,10,25,0.94)","#EFE8FF","#FFFFFF","#7C5CFF","rgba(0,0,0,0.82)","600 28px Georgia")
 };
-
 class Hand {
     constructor(x,y,w,h,degreeDisplacementUnit,initialDeg,unitStepTime,color,initAccumulatorTime=0){
         this.displacementUnit = degreeDisplacementUnit; //radian
@@ -108,7 +105,7 @@ class Clock {
         this.mins = mins;
         this.secs = secs;
         //Appearance
-        this.currentTheme = Themes.WOOD;
+        this.currentTheme = Themes.VIOLET_DREAM;
         this.screwWidth = this.radius*0.05;
         this.screwHeight = this.screwWidth;
 
@@ -120,10 +117,11 @@ class Clock {
             this.labels.push(new Label(this,(3+i)%this.noLabels));
         }
         let initialDeg = ((Math.PI/30)*this.secs) - Math.PI/2;
-        this.secondHand = new Hand(this.x,this.y,this.radius*0.88,6,(Math.PI/(6*5)),initialDeg,1,this.currentTheme.secondHandColor,0);
+        let accumulatedTime = 0;
+        this.secondHand = new Hand(this.x,this.y,this.radius*0.88,6,(Math.PI/(6*5)),initialDeg,1,this.currentTheme.secondHandColor,accumulatedTime);
         initialDeg = ((Math.PI/30)*this.mins) - Math.PI/2;
         this.minuteHand = new Hand(this.x,this.y,this.radius*0.88,8,(Math.PI/(30)),initialDeg,60,this.currentTheme.handsColor,this.secs);
-        initialDeg = ((Math.PI/30)*this.hrs) - Math.PI/2;
+        initialDeg = ((Math.PI/6)*this.hrs) - Math.PI/2;
         this.hourHand = new Hand(this.x,this.y,this.radius*0.5,10,(Math.PI/6),initialDeg,(60*60),this.currentTheme.handsColor,this.mins*60);
     }
     update(dt){
@@ -144,7 +142,7 @@ class Clock {
         ctx.arc(this.x,this.y,this.radius+7,0,Math.PI*2);
         ctx.fill();
         //inner Body
-        ctx.fillStyle = this.currentTheme.innerShadowColor;
+        ctx.fillStyle = this.currentTheme.bodyColor;
         ctx.beginPath();
         ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
         ctx.fill();
@@ -184,7 +182,7 @@ class ClockApp {
         this.canvas.width = this.canvasWidth;
         this.canvas.height = this.canvasHeight;
         const now = new Date();
-        this.clock = new Clock(200,(now.getHours() + 1 )%12,now.getMinutes(),now.getSeconds(),this);
+        this.clock = new Clock(200,now.getHours(),now.getMinutes(),now.getSeconds(),this);
         this.prevMs = performance.now();
         this.loop();
     }
