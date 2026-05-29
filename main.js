@@ -32,19 +32,25 @@ const Themes = {
     ROYAL : new Theme(
         "rgba(150,120,255,0.30)","rgba(10,10,25,0.94)","#EFE8FF","#FFFFFF","#7C5CFF","rgba(0,0,0,0.82)","600 28px Georgia")
 };
+
+const MotionType = {
+    CONTINUOUS : "CONTINUOUS",
+    DISCRETE : "DISCRETE"
+}
 class Hand {
-    constructor(x,y,w,h,degreeDisplacementUnit,initialDeg,unitStepTime,color,initAccumulatorTime=0){
-        this.displacementUnit = degreeDisplacementUnit; //radian
+    constructor(x,y,w,h,unitDegreeDisplacement,initialDeg,unitStepTime,color,initAccumulatorTime=0,motionType=MotionType.DISCRETE){
+        this.unitDegreeDisplacement = unitDegreeDisplacement; // radian per unit step time
         this.currentDeg = initialDeg;
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.handColor = color;
-        this.maxIndex = Math.PI*2/this.displacementUnit;
+        this.maxIndex = Math.PI*2/this.unitDegreeDisplacement;
         this.accumulator = initAccumulatorTime;
         this.unitStepTime = unitStepTime;
-        this.currentIndex = this.currentDeg/this.displacementUnit;
+        this.currentIndex = this.currentDeg/this.unitDegreeDisplacement;
+        this.motionType = motionType
     }
     update(dt){
         this.changed = false;
@@ -52,7 +58,15 @@ class Hand {
         if(this.accumulator>=this.unitStepTime){
             this.accumulator-=this.unitStepTime;
             this.currentIndex = (this.currentIndex+1) % this.maxIndex;
-            this.currentDeg = this.displacementUnit*this.currentIndex;
+            this.currentDeg = this.unitDegreeDisplacement*this.currentIndex;
+        }
+
+        //Continuous motion behaviour
+        if(this.motionType==MotionType.CONTINUOUS){
+            //Calculating Interpolated angle for hand
+            let accumulatedTime = this.accumulator%this.unitStepTime;
+            let accumulatedAngle = (this.unitDegreeDisplacement/this.unitStepTime)*accumulatedTime;
+            this.currentDeg = (this.unitDegreeDisplacement*this.currentIndex) + accumulatedAngle;
         }
         
     }
@@ -116,13 +130,16 @@ class Clock {
         for(let i=0; i<this.noLabels; i++){
             this.labels.push(new Label(this,(3+i)%this.noLabels));
         }
+
         let initialDeg = ((Math.PI/30)*this.secs) - Math.PI/2;
         let accumulatedTime = 0;
-        this.secondHand = new Hand(this.x,this.y,this.radius*0.88,6,(Math.PI/(6*5)),initialDeg,1,this.currentTheme.secondHandColor,accumulatedTime);
+        this.secondHand = new Hand(this.x,this.y,this.radius*0.88,6,(Math.PI/(6*5)),initialDeg,1,this.currentTheme.secondHandColor,accumulatedTime,MotionType.DISCRETE);
+
         initialDeg = ((Math.PI/30)*this.mins) - Math.PI/2;
-        this.minuteHand = new Hand(this.x,this.y,this.radius*0.88,8,(Math.PI/(30)),initialDeg,60,this.currentTheme.handsColor,this.secs);
+        this.minuteHand = new Hand(this.x,this.y,this.radius*0.88,8,(Math.PI/(30)),initialDeg,60,this.currentTheme.handsColor,this.secs,MotionType.CONTINUOUS);
+
         initialDeg = ((Math.PI/6)*this.hrs) - Math.PI/2;
-        this.hourHand = new Hand(this.x,this.y,this.radius*0.5,10,(Math.PI/6),initialDeg,(60*60),this.currentTheme.handsColor,this.mins*60);
+        this.hourHand = new Hand(this.x,this.y,this.radius*0.5,10,(Math.PI/6),initialDeg,(60*60),this.currentTheme.handsColor,this.mins*60,MotionType.CONTINUOUS);
     }
     update(dt){
         this.secondHand.update(dt);
