@@ -10,33 +10,40 @@ class Theme {
     }
 }
 
-const Themes = {
-    BLACK_ICE : new Theme(
-        "rgba(210,230,255,0.22)","rgba(8,12,18,0.92)","#F3FAFF","#FFFFFF","#72D8FF","rgba(0,0,0,0.82)","600 28px Segoe UI"),
-    TITANIUM : new Theme(
-        "rgba(200,205,215,0.30)","rgba(26,30,36,0.94)","#EDF2F7","#FAFAFA","#8BA3B8","rgba(0,0,0,0.75)","600 27px Helvetica"),
-    GOLDEN_HOUR : new Theme(
-        "rgba(255,210,120,0.32)","rgba(28,18,12,0.92)","#FFE8B6","#FFF7E8","#F9B233","rgba(0,0,0,0.70)","600 28px Georgia"),
-    CRIMSON_NIGHT : new Theme(
-        "rgba(255,120,120,0.26)","rgba(20,8,10,0.94)","#FFE3E3","#FFF5F5","#FF4D6D","rgba(0,0,0,0.82)","600 28px Georgia"),
-    ARCTIC_GLASS : new Theme(
-        "rgba(220,240,255,0.22)","rgba(18,28,40,0.55)","#F5FBFF","#FFFFFF","#8AD7FF","rgba(0,0,0,0.40)","600 27px Segoe UI"),
-    DEEP_OCEAN : new Theme(
-        "rgba(80,170,255,0.28)","rgba(6,22,38,0.94)","#DDF5FF","#F8FDFF","#00B4FF","rgba(0,0,0,0.78)","600 27px Segoe UI"),
-    VIOLET_DREAM : new Theme(
-        "rgba(200,150,255,0.28)","rgba(18,10,28,0.94)","#F6EAFF","#FFF8FF","#C77DFF","rgba(0,0,0,0.78)","600 28px Segoe UI"),
-    EMBER : new Theme(
-        "rgba(255,170,120,0.24)","rgba(24,10,6,0.95)","#FFE7D9","#FFF7F0","#FF7A45","rgba(0,0,0,0.82)","600 28px Trebuchet MS"),
-    MOONLIGHT : new Theme(
-        "rgba(255,255,255,0.18)","rgba(18,18,24,0.88)","#F5F7FA","#FFFFFF","#A5B4FC","rgba(0,0,0,0.72)","600 27px Helvetica"),
-    ROYAL : new Theme(
-        "rgba(150,120,255,0.30)","rgba(10,10,25,0.94)","#EFE8FF","#FFFFFF","#7C5CFF","rgba(0,0,0,0.82)","600 28px Georgia")
-};
-
 const MotionType = {
     CONTINUOUS : "CONTINUOUS",
     DISCRETE : "DISCRETE"
 }
+
+const Themes = {
+    ROLEX_CLASSIC : new Theme(
+        "#C8A951","#111111","#E7D7A2","#F8F4E8","#D4AF37","rgba(0,0,0,0.75)","600 28px Georgia"),
+    ROLEX_GREEN : new Theme(
+        "#C8A951","#0E2B1F","#EADAA8","#FFF8E7","#D4AF37","rgba(0,0,0,0.78)","600 28px Georgia"),
+    OMEGA_SPEEDMASTER : new Theme(
+        "#A8ADB4","#121212","#E8EAED","#F8FAFC","#D63A3A","rgba(0,0,0,0.82)","600 27px Helvetica"),
+    GSHOCK_STEALTH : new Theme(
+        "#3D4148","#101214","#D6D8DB","#F5F5F5","#FF5C5C","rgba(0,0,0,0.88)","bold 26px Impact"),
+    GSHOCK_MILITARY : new Theme(
+        "#55624C","#1B1F18","#D7DCCF","#EEF2E8","#F0B429","rgba(0,0,0,0.85)","bold 26px Impact"),
+    AP_ROYAL_OAK : new Theme(
+        "#9EA7B3","#20242B","#F1F3F5","#FAFAFA","#7DA0C4","rgba(0,0,0,0.78)","600 27px Helvetica"),
+    PATEK_NAVY : new Theme(
+        "#D1B26A","#0B1833","#F2E7C8","#FFF8E8","#D6B15A","rgba(0,0,0,0.80)","600 28px Georgia"),
+    SEIKO_DIVER : new Theme(
+        "#D0D5DB","#0D1B2A","#EAF4FF","#F8FBFF","#3BA7FF","rgba(0,0,0,0.82)","600 27px Helvetica"),
+    TAG_HEUER : new Theme(
+        "#C7CCD3","#15181C","#F4F6F8","#FFFFFF","#E53935","rgba(0,0,0,0.80)","600 27px Helvetica"),
+    RICHARD_MILLE : new Theme(
+        "#858B93","#0B0D10","#E7EAEE","#FAFAFA","#FF7A00","rgba(0,0,0,0.88)","600 28px Segoe UI"),
+    CARTIER_CLASSIC : new Theme(
+        "#C8A45A","#F7F3EB","#3C3C3C","#1C1C1C","#2B5CAA","rgba(0,0,0,0.18)","600 28px Georgia"),
+    PILOT_AVIATOR : new Theme(
+        "#80858C","#0F1113","#F1F3F4","#FFFFFF","#FF9F1C","rgba(0,0,0,0.86)","600 27px Trebuchet MS"),
+    BELL_ROSS_BEIGE : new Theme(
+        "rgba(185,190,195,0.42)","rgba(221,209,181,0.96)","#2A2A2A","#111111","#7C1111","rgba(0,0,0,0.22)","600 27px Trebuchet MS")
+};
+
 class Hand {
     constructor(x,y,w,h,unitDegreeDisplacement,initialDeg,unitStepTime,color,initAccumulatorTime=0,motionType=MotionType.DISCRETE){
         this.unitDegreeDisplacement = unitDegreeDisplacement; // radian per unit step time
@@ -55,8 +62,8 @@ class Hand {
     update(dt){
         this.changed = false;
         this.accumulator += dt;
-        if(this.accumulator>=this.unitStepTime){
-            this.accumulator-=this.unitStepTime;
+        while(this.accumulator>=this.unitStepTime){
+            this.accumulator = this.accumulator-this.unitStepTime;
             this.currentIndex = (this.currentIndex+1) % this.maxIndex;
             this.currentDeg = this.unitDegreeDisplacement*this.currentIndex;
         }
@@ -119,7 +126,7 @@ class Clock {
         this.mins = mins;
         this.secs = secs;
         //Appearance
-        this.currentTheme = Themes.VIOLET_DREAM;
+        this.currentTheme = Themes.BELL_ROSS_BEIGE;
         this.screwWidth = this.radius*0.05;
         this.screwHeight = this.screwWidth;
 
